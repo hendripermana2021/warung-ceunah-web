@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { supabase } from "../lib/supabase";
+import ImageCarousel from "./ImageCarousel";
 
 
 const FoodStands = () => {
@@ -34,14 +35,24 @@ const FoodStands = () => {
         id,
         name_menu,
         price,
-        image,
-        category_id
+        category_id,
+        image_food (
+          id,
+          img_path
+        )
       `)
       .eq("category_id", categoryId);
 
-    if (!error) setFoods(data);
+      console.log("categoryId:", categoryId);
+
+    if (!error) setFoods(data || []);
     setIsLoading(false);
   };
+
+  const getImageUrl = (path) =>
+  supabase.storage.from("food-images").getPublicUrl(path).data.publicUrl;
+
+
 
   useEffect(() => {
     fetchCategories();
@@ -99,51 +110,77 @@ const FoodStands = () => {
           {isLoading ? (
               <p className="font-bold">⏳ Loading menu...</p>
             ) : (
-              <div className="grid sm:grid-cols-2 gap-4 max-h-[520px] overflow-y-auto pr-2">
-                {foods.map((food) => (
-                  <div
-                    key={food.id}
-                    onClick={() => setSelectedFood(food)}
-                    className="relative bg-white border-4 border-black cursor-pointer
-                      shadow-[4px_4px_0_#000] hover:-translate-y-1
-                      hover:shadow-[6px_6px_0_#000] transition-all"
-                  >
-                    {/* IMAGE */}
-                    <img
-                      src={food.image || "/placeholder.png"}
-                      alt={food.name_menu}
-                      className="h-32 w-full object-cover border-b-4 border-black"
-                    />
+              <div className="grid sm:grid-cols-2 gap-4 max-h-130 overflow-y-auto pr-2">
+                {foods.map((food) => {
+                  const images = food.image_food?.map((img) =>
+                    getImageUrl(img.img_path)
+                  );
 
-                    {/* CONTENT */}
-                    <div className="p-3">
-                      {/* NAME + PRICE */}
-                      <div className="flex justify-between items-center mb-1">
-                        <h4 className="font-extrabold text-black text-base">
-                          {food.name_menu}
-                        </h4>
+                  return (
+                    <div
+                      key={food.id}
+                      onClick={() => setSelectedFood(food)}
+                      className="bg-white border-4 border-black cursor-pointer
+                        shadow-[4px_4px_0_#000] hover:-translate-y-1
+                        hover:shadow-[6px_6px_0_#000] transition-all"
+                    >
+                      <ImageCarousel images={images} />
 
-                        <span className="bg-red-500 text-yellow-200 font-extrabold
-                          px-2 py-0.5 border-2 border-black
-                          shadow-[2px_2px_0_#000] text-sm">
-                          Rp {food.price}
-                        </span>
+                      <div className="p-3">
+                        <div className="flex justify-between items-center mb-1">
+                          <h4 className="font-extrabold">{food.name_menu}</h4>
+                          <span className="bg-red-500 text-yellow-200 font-extrabold
+                            px-2 border-2 border-black">
+                            Rp {food.price}
+                          </span>
+                        </div>
                       </div>
-
-                      {/* DESCRIPTION */}
-                      <p className="text-sm font-medium text-gray-800 line-clamp-2">
-                        {food.description || "Tidak ada deskripsi"}
-                      </p>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
+
               </div>
             )}
 
         </section>
       </div>
 
-      {/* MODAL DETAIL (tetap pakai punyamu, tinggal ganti field) */}
+      {selectedFood &&
+        createPortal(
+          <div className="fixed inset-0 z-[9999] bg-black/60
+            flex items-center justify-center">
+
+            <div className="bg-yellow-200 border-4 border-black
+              shadow-[8px_8px_0_#000] max-w-xl w-full p-4">
+
+              <button
+                onClick={() => setSelectedFood(null)}
+                className="mb-2 bg-red-500 text-white
+                  px-3 py-1 border-2 border-black font-bold"
+              >
+                ✖ Close
+              </button>
+
+              <ImageCarousel
+                images={selectedFood.image_food.map((img) =>
+                  getImageUrl(img.img_path)
+                )}
+              />
+
+              <div className="mt-4">
+                <h3 className="text-2xl font-extrabold">
+                  {selectedFood.name_menu}
+                </h3>
+
+                <p className="font-bold mt-1">
+                  Rp {selectedFood.price}
+                </p>
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
+
     </div>
   );
 };
