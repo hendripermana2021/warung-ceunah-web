@@ -1,5 +1,11 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
+
 import "./App.css";
 
 import HerokuLandingPage from "./components/HerokuLandingPage";
@@ -9,13 +15,20 @@ import PageNotFound from "./components/PageNotFound";
 import LocationPage from "./components/LocationPage";
 import ContactPage from "./components/ContactPage";
 
-/* 🔥 Retro animation variant */
+import AddMenuPage from "./admin/menu/AddMenuPage";
+import MenuListPage from "./admin/menu/MenuListPage";
+import AdminLayout from "./layout/AdminLayout";
+import AdminDashboard from "./admin/menu/AdminDashboard";
+import LoginPage from "./admin/LoginPage";
+import UsersListPage from "./admin/users/UsersListPage";
+import CategoryPage from "./admin/category/CategoryPage";
+
+import { AuthProvider } from "./context/AuthContext";
+import AdminRoute from "./components/AdminRoute";
+
+/* 🔥 Retro animation */
 const retroPage = {
-  initial: {
-    opacity: 0,
-    y: 40,
-    scale: 0.95,
-  },
+  initial: { opacity: 0, y: 40, scale: 0.95 },
   animate: {
     opacity: 1,
     y: 0,
@@ -41,6 +54,9 @@ const AnimatedRoutes = () => {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
+        {/* ================= PUBLIC ================= */}
+        <Route path="/login" element={<LoginPage />} />
+
         <Route element={<MobileLayout />}>
           <Route
             path="/"
@@ -50,7 +66,6 @@ const AnimatedRoutes = () => {
               </motion.div>
             }
           />
-
           <Route
             path="/food"
             element={
@@ -59,7 +74,6 @@ const AnimatedRoutes = () => {
               </motion.div>
             }
           />
-
           <Route
             path="/location"
             element={
@@ -68,7 +82,6 @@ const AnimatedRoutes = () => {
               </motion.div>
             }
           />
-
           <Route
             path="/contact"
             element={
@@ -79,7 +92,61 @@ const AnimatedRoutes = () => {
           />
         </Route>
 
-        {/* 404 */}
+        {/* ================= ADMIN (PROTECTED) ================= */}
+        <Route
+          element={
+            <AdminRoute>
+              <AdminLayout />
+            </AdminRoute>
+          }
+        >
+          <Route
+            path="/admin"
+            element={
+              <motion.div {...retroPage}>
+                <AdminDashboard />
+              </motion.div>
+            }
+          />
+
+          <Route
+            path="/admin/menu/add"
+            element={
+              <motion.div {...retroPage}>
+                <AddMenuPage />
+              </motion.div>
+            }
+          />
+
+          <Route
+            path="/admin/menu/list"
+            element={
+              <motion.div {...retroPage}>
+                <MenuListPage />
+              </motion.div>
+            }
+          />
+
+          <Route
+            path="/admin/users/list"
+            element={
+              <motion.div {...retroPage}>
+                <UsersListPage />
+              </motion.div>
+            }
+          />
+
+          <Route
+            path="/admin/category/list"
+            element={
+              <motion.div {...retroPage}>
+                <CategoryPage />
+              </motion.div>
+            }
+          />
+        </Route>
+
+        {/* ================= 404 ================= */}
         <Route
           path="*"
           element={
@@ -95,9 +162,11 @@ const AnimatedRoutes = () => {
 
 function App() {
   return (
-    <BrowserRouter>
-      <AnimatedRoutes />
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <AnimatedRoutes />
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

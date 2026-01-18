@@ -30,7 +30,7 @@ const WarungCeunahLanding = () => {
         {/* CTA */}
         <div className="mt-8 flex justify-center gap-4 flex-wrap">
           <Link
-            to="/menu"
+            to="/food"
             className="bg-black text-white px-6 py-3 font-bold border-4 border-black rounded-xl shadow-[6px_6px_0px_0px_#16a34a] hover:translate-x-1 hover:translate-y-1 transition"
           >
             Lihat Menu 🍽️

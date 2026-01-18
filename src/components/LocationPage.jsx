@@ -2,7 +2,7 @@ import React from "react";
 
 const LocationPage = () => {
   return (
-    <div className="relative w-full min-h-screen bg-yellow-200 border-4 border-black shadow-[6px_6px_0_#000] flex flex-col items-center p-6 sm:p-10">
+    <div className="relative w-full min-h-screen bg-yellow-200 border-4 border-black shadow-[6px_6px_0_#000] flex flex-col items-center p-6 sm:p-20">
 
       {/* Header */}
       <header className="text-center mb-8">
@@ -37,16 +37,18 @@ const LocationPage = () => {
 
         {/* Map */}
         <div className="w-full h-64 sm:h-96 border-4 border-black shadow-[5px_5px_0_#000] overflow-hidden">
-          <iframe
-            title="Lokasi Warung Ceunah"
-            src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d207.202!2d132.7650009!3d33.8416247!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e3!4m3!3m2!1d33.8416247!2d132.7650009!4m3!3m2!1d33.8352932!2d132.7652931!5e0!3m2!1sen!2sjp!4v1726425200000!5m2!1sen!2sjp"
-            width="100%"
-            height="100%"
-            className="border-0"
-            allowFullScreen
-            loading="lazy"
-          ></iframe>
-        </div>
+        <iframe
+          title="Lokasi Warung Ceunah"
+          src="https://www.google.com/maps?q=HM9X%2BFCF%20Jl.%20HM.%20Joni%20Medan&output=embed"
+          width="100%"
+          height="100%"
+          className="border-0"
+          allowFullScreen
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+        ></iframe>
+      </div>
+
 
         <p className="text-center text-lg sm:text-xl font-bold text-blue-700 drop-shadow-[1px_1px_0_#000]">
           📢 Datang lapar, pulang kenyang!
