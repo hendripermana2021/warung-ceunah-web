@@ -162,9 +162,10 @@ const FoodStands = () => {
               </button>
 
               <ImageCarousel
-                images={selectedFood.image_food.map((img) =>
+                images={selectedFood.image_food.map(img =>
                   getImageUrl(img.img_path)
                 )}
+                variant="preview"
               />
 
               <div className="mt-4">

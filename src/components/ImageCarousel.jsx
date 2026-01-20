@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-const ImageCarousel = ({ images = [], onClick }) => {
+const ImageCarousel = ({
+  images = [],
+  onClick,
+  variant = "thumbnail", // "thumbnail" | "preview"
+}) => {
   const [index, setIndex] = useState(0);
 
   if (images.length === 0) {
@@ -11,12 +15,23 @@ const ImageCarousel = ({ images = [], onClick }) => {
     );
   }
 
+  const isPreview = variant === "preview";
+
   return (
-    <div className="relative">
+    <div className="relative flex justify-center">
       <img
         src={images[index]}
         onClick={onClick}
-        className="h-32 w-full object-cover border-b-4 border-black cursor-pointer"
+        className={`
+          border-b-4 border-black cursor-pointer
+          transition
+          ${
+            isPreview
+              ? "max-h-[70vh] w-auto object-contain"
+              : "h-32 w-full object-cover"
+          }
+        `}
+        alt="carousel"
       />
 
       {images.length > 1 && (
