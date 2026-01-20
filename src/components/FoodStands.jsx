@@ -59,7 +59,9 @@ const FoodStands = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-yellow-200 border-4 border-black p-6 sm:p-20">
+    <div className="min-h-screen bg-yellow-200 border-4 border-black">
+      <div className="max-w-7xl mx-auto p-6 lg:p-10 lg:mt-10 xl:mt-10">
+
 
       {/* HEADER */}
       <header className="text-center mb-8">
@@ -71,15 +73,22 @@ const FoodStands = () => {
         </p>
       </header>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-4 gap-6">
+
 
         {/* SIDEBAR CATEGORY */}
-        <aside className="bg-blue-200 border-4 border-black p-4">
+        <aside className="
+          bg-blue-200 border-4 border-black p-4
+          lg:col-span-1
+          lg:sticky lg:top-6
+          h-fit
+        ">
+
           <h3 className="text-xl font-extrabold mb-4">
             🏷️ Kategori Makanan
           </h3>
 
-          <ul className="grid grid-cols-2 gap-3">
+          <ul className="grid grid-cols-2 lg:grid-cols-1 md:grid-cols-2 gap-3">
             {categories.map((cat) => (
               <button
                 key={cat.id}
@@ -102,7 +111,11 @@ const FoodStands = () => {
         </aside>
 
         {/* FOOD GRID */}
-        <section className="bg-green-200 border-4 border-black p-4">
+        <section className="
+          bg-green-200 border-4 border-black p-4
+          lg:col-span-3
+        ">
+
           <h3 className="text-xl font-extrabold mb-4">
             🍜 {selectedCategory?.name_category}
           </h3>
@@ -110,7 +123,14 @@ const FoodStands = () => {
           {isLoading ? (
               <p className="font-bold">⏳ Loading menu...</p>
             ) : (
-              <div className="grid sm:grid-cols-2 gap-4 max-h-130 overflow-y-auto pr-2">
+              <div className="
+                grid gap-4
+                sm:grid-cols-2
+                lg:grid-cols-2
+                xl:grid-cols-2
+                max-h-[70vh] overflow-y-auto pr-2
+              ">
+
                 {foods.map((food) => {
                   const images = food.image_food?.map((img) =>
                     getImageUrl(img.img_path)
@@ -121,7 +141,7 @@ const FoodStands = () => {
                       key={food.id}
                       onClick={() => setSelectedFood(food)}
                       className="bg-white border-4 border-black cursor-pointer
-                        shadow-[4px_4px_0_#000] hover:-translate-y-1
+                        shadow-[4px_4px_0_#000] hover:-translate-y-1 hover:scale-[1.02]
                         hover:shadow-[6px_6px_0_#000] transition-all"
                     >
                       <ImageCarousel images={images} />
@@ -150,8 +170,13 @@ const FoodStands = () => {
           <div className="fixed inset-0 z-[9999] bg-black/60
             flex items-center justify-center">
 
-            <div className="bg-yellow-200 border-4 border-black
-              shadow-[8px_8px_0_#000] max-w-xl w-full p-4">
+            <div className="
+              bg-yellow-200 border-4 border-black
+              shadow-[8px_8px_0_#000]
+              max-w-2xl w-full
+              p-6
+            ">
+
 
               <button
                 onClick={() => setSelectedFood(null)}
@@ -182,6 +207,7 @@ const FoodStands = () => {
           document.body
         )}
 
+    </div>
     </div>
   );
 };
