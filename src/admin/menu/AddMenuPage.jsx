@@ -65,6 +65,10 @@ const AddMenuPage = () => {
       .from("menu")
       .select(`
         *,
+        category_food (
+          id,
+          name_category
+        )
         image_food ( id, img_path )
       `)
       .order("created_at", { ascending: false });
@@ -96,6 +100,12 @@ const AddMenuPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+
+    if (!form.category_id) {
+      alert("❌ Kategori wajib dipilih");
+      setIsSubmitting(false);
+      return;
+    }
 
     // 1️⃣ INSERT MENU
     const { data: menuData, error: menuError } = await supabase
@@ -230,6 +240,12 @@ const AddMenuPage = () => {
     }
   };
 
+  const removeImage = (index) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+    setPreviewImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+
 
 
 
@@ -278,7 +294,7 @@ const AddMenuPage = () => {
             className="p-3 border-4 border-black font-bold"
             value={form.category_id}
             onChange={(e) =>
-              setForm({ ...form, category_id: Number(e.target.value) })
+              setForm({ ...form, category_id: e.target.value })
             }
             required
           >
@@ -296,23 +312,48 @@ const AddMenuPage = () => {
             className="p-3 border-4 border-black font-bold bg-white"
             onChange={(e) => {
               const files = Array.from(e.target.files);
-              setImages(files);
 
-              setPreviewImages(
-                files.map((file) => URL.createObjectURL(file))
-              );
+              setImages((prev) => [...prev, ...files]);
+              setPreviewImages((prev) => [
+                ...prev,
+                ...files.map((file) => URL.createObjectURL(file)),
+              ]);
             }}
           />
 
+
           <div className="flex gap-3 mt-2 flex-wrap">
             {previewImages.map((src, i) => (
-              <img
+              <div
                 key={i}
-                src={src}
-                className="w-20 h-20 object-cover border-4 border-black shadow-[3px_3px_0_#000]"
-              />
+                className="relative w-20 h-20
+                  border-4 border-black bg-white
+                  shadow-[3px_3px_0_#000]"
+              >
+                {/* IMAGE */}
+                <img
+                  src={src}
+                  className="w-full h-full object-cover"
+                />
+
+                {/* ❌ DELETE BUTTON */}
+                <button
+                  type="button"
+                  onClick={() => removeImage(i)}
+                  className="absolute -top-3 -right-3
+                    w-6 h-6 bg-red-500 text-white
+                    font-extrabold text-xs
+                    border-2 border-black
+                    shadow-[2px_2px_0_#000]
+                    hover:-translate-y-0.5 hover:shadow-[3px_3px_0_#000]
+                    transition"
+                >
+                  ✕
+                </button>
+              </div>
             ))}
           </div>
+
 
 
         </div>
@@ -388,7 +429,7 @@ const AddMenuPage = () => {
                 {menu.name_menu}
               </h3>
               <p className="font-bold text-sm">
-                Rp {menu.price} • {menu.category_id}
+                Rp {menu.price} • {menu.category_food?.name_category}
               </p>
 
               <div className="flex gap-2 mt-3">
@@ -494,7 +535,7 @@ const AddMenuPage = () => {
                     />
 
                     {/* GANTI IMAGE */}
-                    <label className="absolute bottom-1 left-1 bg-blue-400 text-xs font-bold px-2 py-1 border-2 border-black cursor-pointer">
+                    {/* <label className="absolute bottom-1 left-1 bg-blue-400 text-xs font-bold px-2 py-1 border-2 border-black cursor-pointer">
                       Ganti
                       <input
                         type="file"
@@ -513,7 +554,7 @@ const AddMenuPage = () => {
                           setEditImages(updated);
                         }}
                       />
-                    </label>
+                    </label> */}
 
                     {/* HAPUS */}
                     <button

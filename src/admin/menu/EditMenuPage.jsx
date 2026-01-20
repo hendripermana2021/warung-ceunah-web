@@ -76,7 +76,7 @@ const EditMenuPage = ({
                   />
 
                   {/* GANTI IMAGE */}
-                  <label className="absolute bottom-1 left-1 bg-blue-400
+                  {/* <label className="absolute bottom-1 left-1 bg-blue-400
                     text-xs font-bold px-2 py-1 border-2 border-black cursor-pointer">
                     Ganti
                     <input
@@ -96,7 +96,7 @@ const EditMenuPage = ({
                         setEditImages(updated);
                       }}
                     />
-                  </label>
+                  </label> */}
 
                   {/* DELETE IMAGE */}
                   <button

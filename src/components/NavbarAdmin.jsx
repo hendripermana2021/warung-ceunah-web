@@ -3,10 +3,22 @@ import {
   HomeIcon,
   UserGroupIcon,
   ClipboardDocumentListIcon,
-  TagIcon,
+  TagIcon, 
+  ArrowRightStartOnRectangleIcon,
 } from "@heroicons/react/24/solid";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase"; // sesuaikan path
+import { useState } from "react";
+
 
 const AdminNavbar = () => {
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  const confirmLogout = async () => {
+    await supabase.auth.signOut();
+    setShowLogoutConfirm(false);
+  };
+
   return (
     <>
       {/* MOBILE ADMIN NAVBAR */}
@@ -31,6 +43,15 @@ const AdminNavbar = () => {
             <TagIcon className="w-6 h-6 drop-shadow-[1px_1px_0_#000]" />
             Kategori
           </NavItem>
+          <NavItem
+            color="text-black"
+            asButton
+            onClick={() => setShowLogoutConfirm(true)}
+          >
+            <ArrowRightStartOnRectangleIcon className="w-6 h-6" />
+            Logout
+          </NavItem>
+
         </div>
       </div>
 
@@ -60,34 +81,96 @@ const AdminNavbar = () => {
             <TagIcon className="w-5 h-5" />
             Kategori
           </DesktopNav>
+
+          <DesktopNav asButton 
+            onClick={() => setShowLogoutConfirm(true)} bg="bg-red-300">
+            <ArrowRightStartOnRectangleIcon className="w-6 h-6 drop-shadow-[1px_1px_0_#000]" />
+            Logout
+          </DesktopNav>
         </div>
+
+
       </div>
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/70">
+          <div className="bg-yellow-300 border-4 border-black
+            shadow-[8px_8px_0_#000] p-6 w-[90%] max-w-sm">
+
+            <h2 className="text-xl font-extrabold mb-2">
+              ⚠️ Konfirmasi Logout
+            </h2>
+
+            <p className="font-bold mb-6">
+              Kamu yakin mau keluar dari <span className="underline">Admin Panel</span>?
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="flex-1 bg-blue-400 border-2 border-black font-extrabold"
+              >
+                ❌ Batal
+              </button>
+
+              <button
+                onClick={confirmLogout}
+                className="flex-1 bg-red-500 text-white border-2 border-black font-extrabold"
+              >
+                🔓 Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
 
 /* ===== COMPONENT KECIL ===== */
 
-const NavItem = ({ to, children, color }) => (
-  <Link
-    to={to}
-    className={`flex flex-col items-center text-[10px] font-extrabold ${color}
-      hover:-translate-y-1 hover:scale-110 transition-transform`}
-  >
-    {children}
-  </Link>
-);
+const NavItem = ({ to, children, color, onClick }) => {
+  if (onClick) {
+    return (
+      <button
+        onClick={onClick}
+        className={`flex flex-col items-center text-[10px] font-extrabold ${color}
+          hover:-translate-y-1 hover:scale-110 transition-transform`}
+      >
+        {children}
+      </button>
+    );
+  }
 
-const DesktopNav = ({ to, children, bg }) => (
-  <Link
-    to={to}
-    className={`${bg} text-black font-extrabold px-4 py-2
-      border-2 border-black shadow-[3px_3px_0_#000]
-      hover:-translate-y-1 hover:shadow-[5px_5px_0_#000]
-      transition-all flex items-center space-x-1`}
-  >
-    {children}
-  </Link>
-);
+  return (
+    <Link
+      to={to}
+      className={`flex flex-col items-center text-[10px] font-extrabold ${color}
+        hover:-translate-y-1 hover:scale-110 transition-transform`}
+    >
+      {children}
+    </Link>
+  );
+};
+
+
+const DesktopNav = ({ to, children, bg, onClick }) => {
+  if (onClick) {
+    return (
+      <button
+        onClick={onClick}
+        className={`${bg} px-4 py-2 border-2 border-black font-extrabold`}
+      >
+        {children}
+      </button>
+    );
+  }
+
+  return (
+    <Link to={to} className={`${bg} px-4 py-2 border-2 border-black font-extrabold`}>
+      {children}
+    </Link>
+  );
+};
+
 
 export default AdminNavbar;
